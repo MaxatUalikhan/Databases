@@ -40,35 +40,46 @@ CREATE TABLE customers(
 );
 
 
+
 --Exercise 3
-CREATE TABLE university(
-    
+CREATE TABLE lesson_participants(
+    lesson_id integer PRIMARY KEY,
+    lesson_title varchar(50) NOT NULL,
+    teaching_instructor_id integer NOT NULL REFERENCES instructors (instructor_id),
+    studying_students_class_id integer NOT NULL REFERENCES class (class_id),
+    room_number integer NOT NULL CHECK (room_number>0)
 );
 
-CREATE TABLE students(
-    id integer PRIMARY KEY,
-    full_name varchar(50) NOT NULL,
-    age integer NOT NULL CHECK (age>0),
-    birth_date date,
-    gender varchar(20),
-    average_grade double precision,
-    information_about_yourself text,
-    need_for_a_dormitory boolean,
-    additional_info text
+CREATE TABLE instr_languages(
+    language_instructor integer NOT NULL  ,
+    language_name varchar(20) NOT NULL ,
+    PRIMARY KEY (language_instructor,language_name)
 );
 
 CREATE TABLE instructors(
-    full_name varchar(50),
-    speaking_languages text,
-    work_experience integer,
-    possibility_of_remote_lessons boolean
+    instructor_id integer PRIMARY KEY REFERENCES instr_languages(language_instructor),
+    full_name varchar(50) NOT NULL CHECK (char_length(full_name)>3),
+    speaking_languages_id  integer NOT NULL REFERENCES instr_languages(language_instructor),
+    work_experience_year varchar(20) NOT NULL,
+    possibility_of_remote_lessons boolean NOT NULL
 );
 
-CREATE TABLE lesson_participants(
-    lesson_title varchar(50),
-    teaching_instructor varchar(50) ,
-    studying_students varchar(50) ,
-    room_number integer NOT NULL
+CREATE TABLE students(
+    student_id integer PRIMARY KEY REFERENCES class (student_id),
+    full_name varchar(50) NOT NULL CHECK (char_length(full_name)>3),
+    age integer NOT NULL CHECK (age>5),
+    birth_date date NOT NULL,
+    gender varchar(20) NOT NULL,
+    average_grade double precision NOT NULL CHECK (average_grade>0),
+    information_about_yourself text NOT NULL,
+    need_for_a_dormitory boolean NOT NULL,
+    additional_info text
+);
+
+CREATE TABLE class(
+    class_id integer NOT NULL,
+    student_id integer NOT NULL,
+    PRIMARY KEY (class_id,student_id)
 );
 
 
